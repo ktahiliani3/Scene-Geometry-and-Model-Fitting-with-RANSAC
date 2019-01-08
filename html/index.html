@@ -1,0 +1,522 @@
+<html>
+<head>
+<title>Computer Vision Project</title>
+<link href='http://fonts.googleapis.com/css?family=Nunito:300|Crimson+Text|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" title="Default" href="styles/github.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<link rel="stylesheet" href="highlighting/styles/default.css">
+<script src="highlighting/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: capitalize;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 1160px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td img {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body>
+<div id="header" >
+<div id="headersub">
+<h1>Kapil Tahiliani</h1>
+</div>
+</div>
+<div class="container">
+
+<h2> Camera Calibration and Fundamental Matrix Estimation with RANSAC</h2>
+
+
+<img src = "fund2.png"  width = "40%" align = "right"/>
+
+
+<p>  This project involves the computation of the camera projection matrix and the fundamental matrix and using that to increase the accuracy of matches obtained using ORB to get nearly perfect results. The projection matrix helps us in mapping the 3D world coordinates to 2D image coordinates. For the computation of the projection matrix, we set up a linear regression to solve for the camera parameters. The fundamental matrix relates the points in one scene to epipolar lines in another scene. Finally, we use RANSAC for the computation of the fundamental matrix and aim to improve the accuracy of the matching algorithm to get nearly perfect matches using the point correspondences obtained from ORB, which is an alternative to SIFT. The project can be divided into the following four steps.     </p>
+
+<ol>
+<li> Computation of the camera projection matrix.</li>
+<li> Computation of the camera center.</li>
+<li> Estimation of the fundamental matrix.</li>
+<li> Fundamental matrix estimation using RANSAC. </li>
+</ol>
+
+
+
+
+
+<h2>Camera Projection Matrix</h2>
+<p>
+
+The camera projection matrix is a 3X4 matrix that helps us in mapping the 3D world coordinates to 2D image coordinates. For the computation of this matrix, we convert the given 2D points and corresponding 3D points to homogenous coordinates and solve a set of M homogenous equations. To solve the set of homogeneous equations, we fixed the last element of the camera projection matrix to 1 and solve for the remaining coefficients. Using this matrix, we can estimate the extrinsic and intrinsic parameters of the camera. The intrinsic parameters deal with the internal characteristics of the camera such as the image center, focal length, etc. The extrinsic parameters define the location and orientation of the camera with respect to the world frame. In this project, the camera projection matrix is used to estimate the camera center using the given 2D and corresponding 3D coordinates which turned out to be (-1.5126, -2.3517, 0.2827) in world coordinates. Figure 2 illustrates the overlay of the projected points over the actual points, and figure 3 gives us the location of the camera center in 3D world coordinates. For the given set of 2D points and corresponding 3D points the camera projection matrix was estimated to be the following with a total residual of 0.044535.
+<br>
+<br>
+<table cellspacing="0">
+    <tr>
+      <td class="top-and-left"></td>
+      <td>0.76785834 &nbsp</td>
+      <td>-0.49384797 &nbsp</td>
+      <td>-0.02339781 &nbsp</td>
+      <td>0.00674445 &nbsp</td>
+      <td class="top-and-right"></td>
+    </tr>
+    <tr>
+      <td class="left"></td>
+      <td>-0.0852134 &nbsp</td>
+      <td>-0.09146818 &nbsp</td>
+      <td>-0.90652332 &nbsp</td>
+      <td>-0.08775678 &nbsp</td>
+      <td class="right"></td>
+    </tr>
+    <tr class="bottom row">
+      <td class="bottom-and-left"></td>
+      <td>0.18265016 &nbsp</td>
+      <td>0.29882917 &nbsp</td>
+      <td>-0.07419242 &nbsp</td>
+      <td>1 &nbsp</td>
+      <td class="bottom-and-right"></td>
+    </tr>
+  </table>
+
+
+    <style>
+    .top-and-left {
+      padding: 5px;
+      border-top: thin solid black;
+      border-left: thin solid black;
+    }
+
+    .top-and-right {
+      padding: 5px;
+      border-top: thin solid black;
+      border-right: thin solid black;
+    }
+
+    .bottom-and-left {
+      padding: 5px;
+      border-bottom: thin solid black;
+      border-left: thin solid black;
+    }
+
+    .bottom-and-right {
+      padding: 5px;
+      border-bottom: thin solid black;
+      border-right: thin solid black;
+    }
+
+    .left {
+      border-left: thin solid black;
+    }
+
+    .right {
+      border-right: thin solid black;
+    }
+
+    </style>
+
+
+<table border="0">
+<center>
+<tr>
+<td><img src="points.png" width="100%"></td>
+<td><img src="center.png" width="100%"></td>
+</tr>
+
+<tr>
+<td>Fig2. Overlay of points.</td>
+<td>Fig3. Camera center coordinates in 3D world.</td>
+</tr>
+</center>
+</table>
+
+<h2>Estimation of the Fundamental Matrix</h2>
+<p>
+
+Epipolar geometry is the intrinsic projective geometry between two views and depends only on the cameras' internal parameters and relative pose of cameras. This geometry is encapsulated by the fundamental matrix. For the computation of the fundamental matrix, the correspondences between image points are compared such that x'Fx = 0 for any pair of correspondences. The fundamental matrix is a 3X3 matrix; therefore there are nine elements, but only their ratios are important, which leaves us with eight elements to be figured out. Hence, eight pairs of correspondences are required to solve the regression equations for the estimation of the fundamental matrix. In this project the fundamental matrix has been estimated using the given pair of correspondences and to show the correctness of the estimate, epipolar lines have been drawn on one image which corresponds to a point in the other image. Figure 3 shows all the epipolar lines crossing through the corresponding points in the other image. For the image pair pic_a and pic_b the estimated fundamental matrix is the following.
+<br>
+<br>
+
+<table cellspacing="0">
+    <tr>
+      <td class="top-and-left"></td>
+      <td>-1.17248591e-07 &nbsp</td>
+      <td>1.60824663e-06 &nbsp</td>
+      <td>-4.01980786e-04 &nbsp</td>
+      <td class="top-and-right"></td>
+    </tr>
+    <tr>
+      <td class="left"></td>
+      <td>1.11212887e-06 &nbsp</td>
+      <td>-2.73443755e-07 &nbsp</td>
+      <td>3.23319884e-03 &nbsp</td>
+      <td class="right"></td>
+    </tr>
+    <tr class="bottom row">
+      <td class="bottom-and-left"></td>
+      <td>-2.36400817e-05 &nbsp</td>
+      <td>-4.44404958e-03 &nbsp</td>
+      <td>1.03455561e-01 &nbsp</td>
+      <td class="bottom-and-right"></td>
+    </tr>
+  </table>
+
+
+    <style>
+    .top-and-left {
+      padding: 5px;
+      border-top: thin solid black;
+      border-left: thin solid black;
+    }
+
+    .top-and-right {
+      padding: 5px;
+      border-top: thin solid black;
+      border-right: thin solid black;
+    }
+
+    .bottom-and-left {
+      padding: 5px;
+      border-bottom: thin solid black;
+      border-left: thin solid black;
+    }
+
+    .bottom-and-right {
+      padding: 5px;
+      border-bottom: thin solid black;
+      border-right: thin solid black;
+    }
+
+    .left {
+      border-left: thin solid black;
+    }
+
+    .right {
+      border-right: thin solid black;
+    }
+
+    </style>
+
+
+
+</p>
+
+<table border="0">
+<center>
+<tr>
+<td><img src="fund1.png" width="100%"></td>
+<td><img src="fund2.png" width="100%"></td>
+</tr>
+
+<tr>
+<td>Fig4. Epipolar lines passing through matches in image 1.</td>
+<td>Fig5. Epipolar lines passing through matches in image 2.</td>
+</tr>
+</center>
+</table>
+
+<p>
+
+To increase the accuracy of the estimate of the fundamental matrix the coordinates have been normalized using linear transformations. The computed transform matrix is a product of the scale and offset matrix. Using the normalized coordinates does not show a big difference in the case above since the correspondences are almost perfect. But a considerable difference can be observed in other cases which have been illustrated in the results section.
+
+</p>
+
+<h2>Fundamental Matrix Estimation Using RANSAC</h2>
+<p>
+
+A major problem in local feature matching using the Harris corner detector and SIFT feature descriptor was the accuracy in difficult images such as Episcopal Gaudi. Using the fundamental matrix, the search for a particular match is narrowed down to a line in the second image. This property has been used to improve the accuracy of matches in pairs of images. In this project, RANSAC has been used to estimate the fundamental matrix using the pairs of correspondences obtained through ORB. Randomly eight pairs of correspondences are chosen from the matches obtained to estimate the fundamental matrix. To get the best estimate of the fundamental matrix, the number of inliers is calculated for each estimate, and the matrix with the most inliers is chosen to be the final fundamental matrix using which the incorrect ORB matches are removed.
+
+</p>
+
+
+
+<h2>Results</h2>
+
+<p>
+
+The algorithm was tested on four pairs of images and have been illustrated in the two tables below. The first table has results obtained without normalizing the coordinates while the second table has results obtained after the coordinates have been normalized.
+</p>
+
+
+<table border=1>
+<tr>
+<td>
+Epipolar Lines(Mount Rushmore)
+<img src="rushmorealllines1.png"  width="40%"/>
+<img src="rushmorealllines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Mount Rushmore) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="rushmoreallmatches.png" width="80%"/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+Epipolar Lines(Notre Dam)
+<img src="notrealllines1.png"  width="40%"/>
+<img src="notrealllines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Notre Dam) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="notreallmatches.png" width="60%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Epipolar Lines(Episcopal Gaudi)
+<img src="gaudialllines1.png"  width="40%"/>
+<img src="gaudialllines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Episcopal Gaudi) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="gaudiallmatches.png" width="80%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Epipolar Lines(Woodruff Dorm)
+<img src="woodalllines1.png"  width="40%"/>
+<img src="woodalllines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Woodruff Dorm) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="woodallmatches.png" width="80%"/>
+</td>
+</tr>
+
+</table>
+
+
+<p>
+
+<br>
+<br>
+</p>
+
+
+
+
+
+
+<p>
+
+The following table has results obtained after the coordinates have been normalized. As it can be seen in the results below, the accuracy of the algorithm greatly increases, and the number of mismatches decreases considerably. The coordinates have been normalized in a way such that the mean of the coordinates is zero and the average magnitude is a small number.
+
+
+
+
+</p>
+
+
+
+
+<br>
+
+<table border=1>
+<tr>
+<td>
+Epipolar Lines(Mount Rushmore)
+<img src="rushmoreallnormlines1.png"  width="40%"/>
+<img src="rushmoreallnormlines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Mount Rushmore) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="rushmoreallnormmatch.png" width="80%"/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+Epipolar Lines(Notre Dam)
+<img src="notreallnormlines.jpg"  width="40%"/>
+<img src="notreallnormlines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Notre Dam) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="notreallnormmatch.png" width="60%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Epipolar Lines(Episcopal Gaudi)
+<img src="gaudiallnormlines1.png"  width="40%"/>
+<img src="gaudiallnormlines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Episcopal Gaudi) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="gaudiallnormmatch.png" width="80%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Epipolar Lines(Woodruff Dorm)
+<img src="woodallnormlines1.png"  width="40%"/>
+<img src="woodallnormlines2.png" width="40%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+Matches(Woodruff Dorm) &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+<img src="woodallnormmatch.png" width="80%"/>
+</td>
+</tr>
+
+</table>
+
+
+<h2>Conclusion</h2>
+
+
+
+<p>
+
+The first part of the project involved the computation of the camera projection matrix which maps the 3D world coordinates to the 2D image coordinates and estimation of the camera center. For the second part of the project, it was showed how with the help of the fundamental matrix it is possible to limit our search for respective correspondences to a line, which helps us to remove a lot of the incorrect matches that were initially present. Also, normalizing the coordinates improves the matches even further, thereby helping us to get nearly perfect results even on image pairs such as Episcopal Gaudi.
+
+</p>
+
+
+</body>
+</html>
